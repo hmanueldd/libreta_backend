@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Contacto extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'nombre',
+        'apellido',
+        // Agrega aquí todos los campos que desees que se puedan llenar automáticamente
+    ];
 
     // Contacto.php
     public function telefonos()
