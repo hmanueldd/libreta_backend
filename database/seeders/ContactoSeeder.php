@@ -11,12 +11,10 @@ use App\Models\Direccion;
 
 class ContactoSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    
     public function run()
     {   
-        echo "Se está ejecutando ContactoSeeder...\n";
+        
         Contacto::factory(5000)->create()->each(function ($contacto) {
             $contacto->telefonos()->createMany(Telefono::factory(rand(1, 3))->make()->toArray());
             $contacto->emails()->createMany(Email::factory(rand(1, 3))->make()->toArray());

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Telefono;
 use Illuminate\Http\Request;
 
 class TelefonoController extends Controller
@@ -27,7 +28,14 @@ class TelefonoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'numero' => 'required|string|max:255',
+            'contacto_id' => 'required|int',
+        ]);
+
+        $telefono = Telefono::create($validatedData);
+        
+        return response()->json(['message' => "Teléfono actualizado correctamente",'data'=> $telefono->id, 'error' => false], 201);
     }
 
     /**
@@ -51,7 +59,18 @@ class TelefonoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Validar los datos de entrada
+        $validatedData = $request->validate([
+            'numero' => 'required|string|max:255',
+            'contacto_id' => 'required|int',
+        ]);
+
+        // Buscar el email
+        $telefono = Telefono::findOrFail($id);
+
+        // Actualizar los datos del contacto
+        $telefono->update($validatedData);
+        return response()->json(['message' => "Telefóno actualizado correctamente",'data'=> $telefono->id, 'error' => false], 200);
     }
 
     /**
@@ -59,6 +78,12 @@ class TelefonoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try{
+            $telefono = Telefono::findOrFail($id);
+            $telefono->delete();
+            return response()->json(['message' => "Teléfono eliminado correctamente",'data'=> null, 'error' => false], 200);
+        }catch(\Throwable $error){
+            return response()->json(['message' => "Ocurrió un error al eliminar el teléfono",'data'=> null, 'error' => true], 200);
+        }
     }
 }

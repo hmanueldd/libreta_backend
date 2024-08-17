@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Email;
 use Illuminate\Http\Request;
 
 class EmailController extends Controller
@@ -27,7 +28,14 @@ class EmailController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'email' => 'required|string|max:255',
+            'contacto_id' => 'required|int',
+        ]);
+
+        $email = Email::create($validatedData);
+        
+        return response()->json(['message' => "Email actualizado correctamente",'data'=> $email->id, 'error' => false], 201);
     }
 
     /**
@@ -51,7 +59,18 @@ class EmailController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Validar los datos de entrada
+        $validatedData = $request->validate([
+            'email' => 'required|string|max:255',
+            'contacto_id' => 'required|int',
+        ]);
+
+        // Buscar el email
+        $email = Email::findOrFail($id);
+
+        // Actualizar los datos del contacto
+        $email->update($validatedData);
+        return response()->json(['message' => "Email actualizado correctamente",'data'=> $email->id, 'error' => false], 200);
     }
 
     /**
@@ -59,6 +78,12 @@ class EmailController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try{
+            $email = Email::findOrFail($id);
+            $email->delete();
+            return response()->json(['message' => "Email eliminado correctamente",'data'=> null, 'error' => false], 200);
+        }catch(\Throwable $error){
+            return response()->json(['message' => "Ocurrió un error al eliminar el email",'data'=> null, 'error' => true], 200);
+        }
     }
 }
