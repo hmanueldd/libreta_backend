@@ -87,4 +87,53 @@ class ContactoController extends Controller
             return response()->json(['message' => "Ocurrió un error al eliminar el contacto",'data'=> null, 'error' => true], 200);
         }
     }
+
+    public function search(Request $request){
+        $query = Contacto::query();
+
+        // Filtrar por nombre o apellido
+        if ($request->filled('nombre')) {
+            $query->where('nombre', 'like', '%' . $request->input('nombre') . '%')
+                  ->orWhere('apellido', 'like', '%' . $request->input('nombre') . '%');
+        }
+
+        // Filtrar por ciudad
+        if ($request->filled('ciudad')) {
+            $query->whereHas('direcciones', function ($q) use ($request) {
+                $q->where('ciudad', 'like', '%' . $request->input('ciudad') . '%');
+            });
+        }
+
+        // Filtrar por estado
+        if ($request->filled('estado')) {
+            $query->whereHas('direcciones', function ($q) use ($request) {
+                $q->where('estado', 'like', '%' . $request->input('estado') . '%');
+            });
+        }
+
+        // Filtrar por código postal
+        if ($request->filled('codigo_postal')) {
+            $query->whereHas('direcciones', function ($q) use ($request) {
+                $q->where('codigo_postal', 'like', '%' . $request->input('codigo_postal') . '%');
+            });
+        }
+
+        if ($request->filled('telefono')) {
+            $query->whereHas('telefonos', function($q) use ($request) {
+                $q->where('numero', 'like', '%' . $request->input('telefono') . '%');
+            });
+        }
+    
+        if ($request->filled('email')) {
+            $query->whereHas('emails', function($q) use ($request) {
+                $q->where('email', 'like', '%' . $request->input('email') . '%');
+            });
+        }
+
+        // Ejecutar la consulta y obtener los resultados
+        $contactos = $query->get();
+
+        // Retornar los resultados en formato JSON
+        return response()->json($contactos, 200);
+    }
 }

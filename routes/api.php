@@ -13,6 +13,7 @@ Route::get('/contacto/{id}',[ ContactoController::class,'show']);
 Route::delete('/contacto/{id}',[ ContactoController::class,'destroy']);
 Route::post('/contacto',[ ContactoController::class,'store']);
 Route::put('/contacto/{id}',[ ContactoController::class,'update']);
+Route::post('/contacto/search/',[ ContactoController::class,'search']);
 
 /** DIRECCIONES */
 Route::get('/direccion',[ DireccionController::class,'index']);
