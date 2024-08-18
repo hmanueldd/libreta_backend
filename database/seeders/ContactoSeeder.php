@@ -13,13 +13,20 @@ class ContactoSeeder extends Seeder
 {
     
     public function run()
-    {   
-        
-        Contacto::factory(5000)->create()->each(function ($contacto) {
-            $contacto->telefonos()->createMany(Telefono::factory(rand(1, 3))->make()->toArray());
-            $contacto->emails()->createMany(Email::factory(rand(1, 3))->make()->toArray());
-            $contacto->direcciones()->createMany(Direccion::factory(rand(1, 2))->make()->toArray());
-        });
+    {
+        // Genera 5000 contactos y almacenamos en una colección
+        $contactos = Contacto::factory(5000)->create();
+
+        // Iteramos sobre cada contacto para crear sus relaciones
+        foreach ($contactos as $contacto) {
+            $telefonos = Telefono::factory(rand(1, 3))->make(['contacto_id' => $contacto->id]);
+            $emails = Email::factory(rand(1, 3))->make(['contacto_id' => $contacto->id]);
+            $direcciones = Direccion::factory(rand(1, 2))->make(['contacto_id' => $contacto->id]);
+
+            $contacto->telefonos()->saveMany($telefonos);
+            $contacto->emails()->saveMany($emails);
+            $contacto->direcciones()->saveMany($direcciones);
+        }
     }
 
 }
