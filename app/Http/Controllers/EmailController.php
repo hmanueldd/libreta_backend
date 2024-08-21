@@ -29,7 +29,7 @@ class EmailController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'email' => 'required|email|unique:contacts,email',
+            'email' => 'required|email|unique:emails,email',
             'contacto_id' => 'required|int',
         ]);
 
@@ -61,7 +61,7 @@ class EmailController extends Controller
     {
         // Validar los datos de entrada
         $validatedData = $request->validate([
-            'email' => 'required|email|unique:contacts,email',
+            'email' => 'required|email|unique:emails,email',
             'contacto_id' => 'required|int',
         ]);
 
